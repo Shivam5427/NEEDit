@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEEDit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="NEEDit home">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" rx="9" fill="var(--ink)"/><path d="M15 6.5a6.3 6.3 0 0 0-6.3 6.3c0 4.6 6.3 10.7 6.3 10.7s6.3-6.1 6.3-10.7A6.3 6.3 0 0 0 15 6.5Z" fill="var(--pop)"/><circle cx="15" cy="12.8" r="2.3" fill="var(--ink)"/></svg>
+      <span>NEED<b>it</b></span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#browse">Browse nearby</a>
+      <a href="#how">How it works</a>
+      <a href="#lend">Lend your things</a>
+    </nav>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch between light and dark theme" title="Switch theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+    </button>
+    <button class="btn small" type="button" data-list>List an item</button>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Rent from people nearby</p>
+      <h1 style="margin-top:14px">Need a <span class="typed" id="typed">badminton racket</span><span class="caret" aria-hidden="true"></span> for one day?</h1>
+      <p class="lede">Don't buy what you will use once. Tell NEEDit what you want and the AI shows the closest owners who rent it out, with photos, the daily price and the distance up front.</p>
+      <form class="search" id="searchForm" role="search">
+        <input id="q" name="q" type="search" value="badminton racket" placeholder="Search anything: drill, DSLR, tent…" autocomplete="off" aria-label="What do you need?">
+        <button class="btn" type="submit">Find nearby</button>
+      </form>
+      <div class="ai-line" id="aiLine" aria-live="polite"><span class="dot"></span><span id="aiText">Ready. Ask for anything on the list below.</span></div>
+      <div class="try"><span>Try:</span>
+        <button class="chip" type="button" data-q="drill machine">drill machine</button>
+        <button class="chip" type="button" data-q="DSLR camera">DSLR camera</button>
+        <button class="chip" type="button" data-q="camping tent">camping tent</button>
+        <button class="chip" type="button" data-q="speaker">speaker</button>
+      </div>
+    </div>
+    <aside class="radar-card" aria-label="Map of nearby owners">
+      <div class="radar-top">
+        <span class="live eyebrow"><span class="dot"></span>Owners around you</span>
+        <span class="mono" style="font-size:.8rem;color:var(--muted)">3 km range</span>
+      </div>
+      <div class="radar-stage"><canvas id="radar" role="img" aria-label="Radar showing where matching owners are within three kilometres of you"></canvas></div>
+      <div class="radar-foot"><span id="radarNote">Pins show owners with a match.</span><span>Sample data</span></div>
+    </aside>
+  </div>
+</div>
+
+<div class="band" aria-label="Popular categories">
+  <div class="track" id="track"></div>
+</div>
+
+<section id="browse" style="background:var(--tintD)">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <p class="eyebrow" id="countLine">Near you now</p>
+        <h2 id="resultsTitle" style="margin-top:8px">Closest owners first</h2>
+      </div>
+      <div class="tools">
+        <button class="chip" type="button" data-range="99" aria-pressed="true">Any distance</button>
+        <button class="chip" type="button" data-range="1" aria-pressed="false">Within 1 km</button>
+        <button class="chip" type="button" data-range="2" aria-pressed="false">Within 2 km</button>
+        <label for="sort">Sort</label>
+        <select id="sort">
+          <option value="km">Nearest</option>
+          <option value="price">Cheapest per day</option>
+          <option value="rating">Top rated</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section id="how" style="background:var(--tintC)">
+  <div class="wrap">
+    <div class="head">
+      <h2>From “I need it” to “got it” in three steps</h2>
+      <p>No account juggling and no shop visits. Distance is the first thing you see.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><span class="n">1</span><h3>Say what you need</h3><p>Type it in your own words. “Bat for badminton” and “racket” both work.</p><div class="mini">input: "badminton racket"</div></div>
+      <div class="step rv"><span class="n">2</span><h3>AI finds the closest owner</h3><p>NEEDit ranks owners by how far they are, then price and rating, so you can pick fast.</p><div class="mini">result: 0.4 km · ₹80 / day</div></div>
+      <div class="step rv"><span class="n">3</span><h3>Pick a day, pick it up</h3><p>Send a request for the dates you want. Meet, collect, play, return.</p><div class="mini">total: days × price + refundable deposit</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="lend" class="owners" style="background:var(--tintB)">
+  <div class="wrap">
+    <div class="rv">
+      <p class="eyebrow">For owners</p>
+      <h2 style="margin-top:10px">Your idle racket can pay for itself</h2>
+      <p>That drill, camera or tent sitting in a cupboard is worth something to a neighbour. Add a few photos, set your own daily price and you are listed.</p>
+      <ul>
+        <li>You decide the price and the days it is available.</li>
+        <li>Clear photos get more requests.</li>
+        <li>A refundable deposit protects your item.</li>
+      </ul>
+      <button class="btn" type="button" data-list>List an item with photos</button>
+    </div>
+    <div class="calc rv" aria-label="Earnings illustration">
+      <span class="eyebrow" style="color:inherit;opacity:.72">Earnings illustration</span>
+      <div>
+        <label for="cPrice"><span>Daily price</span><b class="mono" id="cPriceV">₹150</b></label>
+        <input id="cPrice" type="range" min="20" max="1000" step="10" value="150">
+      </div>
+      <div>
+        <label for="cDays"><span>Days rented per month</span><b class="mono" id="cDaysV">6</b></label>
+        <input id="cDays" type="range" min="1" max="25" step="1" value="6">
+      </div>
+      <div>
+        <div class="big mono" id="cOut">₹900</div>
+        <small>per month before any NEEDit fee. An example, not a promise.</small>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><b style="color:var(--ink)">NEED<span style="color:var(--accent)">it</span></b> · Rent it. Return it. Skip the buying.</span>
+    <span>Listings, owners and prices on this page are sample data for the prototype.</span>
+  </div>
+</footer>
+
+<!-- Rent sheet -->
+<div class="backdrop" id="backdrop" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
+    <div class="row">
+      <div><p class="tag" id="sTag"></p><h3 id="sTitle"></h3></div>
+      <button class="icon-btn" id="sClose" type="button" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+    <div id="sPhoto"></div>
+    <p id="sOwner" style="color:var(--muted);font-size:.92rem"></p>
+    <div>
+      <p class="eyebrow" style="margin-bottom:8px">How many days?</p>
+      <div class="days" id="sDays"></div>
+    </div>
+    <div>
+      <div class="line"><span id="sCalc"></span><span class="mono" id="sSub"></span></div>
+      <div class="line"><span>Refundable deposit</span><span class="mono" id="sDep"></span></div>
+      <div class="line total"><span>Rent total</span><span class="mono" id="sTotal"></span></div>
+    </div>
+    <button class="btn" id="sSend" type="button">Send request</button>
+  </div>
+</div>
+
+<!-- Listing sheet -->
+<div class="backdrop" id="listBackdrop" hidden>
+  <form class="sheet wide" id="listForm" role="dialog" aria-modal="true" aria-labelledby="lTitle" novalidate>
+    <div class="row">
+      <div><p class="tag">For owners</p><h3 id="lTitle">List an item</h3></div>
+      <button class="icon-btn" id="lClose" type="button" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+    <div>
+      <label class="drop" id="drop" for="lFile">
+        <span class="up"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg></span>
+        <b>Add photos of your item</b>
+        <span class="note">Drag photos here or tap to choose. Up to 4. The first one is the cover.</span>
+        <input id="lFile" type="file" accept="image/*" multiple>
+      </label>
+      <div class="thumbs" id="thumbs"></div>
+      <p class="err" id="photoMsg" role="status"></p>
+    </div>
+    <div class="fields">
+      <div class="field full"><label for="lName">Item name</label><input id="lName" type="text" maxlength="60" placeholder="e.g. Yonex badminton racket" autocomplete="off"></div>
+      <div class="field"><label for="lCat">Category</label>
+        <select id="lCat"><option>Sports</option><option>Tools</option><option>Cameras</option><option>Outdoor</option><option>Party</option><option>Music</option><option>Cycles</option><option>Other</option></select>
+      </div>
+      <div class="field"><label for="lPrice">Price per day (₹)</label><input id="lPrice" type="number" min="10" step="10" inputmode="numeric" placeholder="80"></div>
+      <div class="field"><label for="lDep">Refundable deposit (₹)</label><input id="lDep" type="number" min="0" step="50" inputmode="numeric" placeholder="500"></div>
+      <div class="field"><label for="lOwner">Your name</label><input id="lOwner" type="text" maxlength="30" placeholder="e.g. Aman V." autocomplete="name"></div>
+    </div>
+    <p class="err" id="lErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn ghost" id="lCancel" type="button">Cancel</button>
+      <button class="btn" type="submit">Publish listing</button>
+    </div>
+    <p class="note">Prototype: your listing stays in this tab only and appears 0.3 km from you so you can see it in the results.</p>
+  </form>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
